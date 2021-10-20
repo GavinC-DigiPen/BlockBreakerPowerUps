@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/StartScreen.unity
+    guid: 2872bf254347a6648b11e3bfef21bd26
+  - enabled: 1
+    path: Assets/Scenes/BlockBreaker.unity
+    guid: 67eb383ef6dd4664b811d5a7d96f444b
+  - enabled: 1
+    path: Assets/Scenes/EndScreen.unity
+    guid: 38515644ea5a53941b70aa7254a798b5
+  m_configObjects: {}
