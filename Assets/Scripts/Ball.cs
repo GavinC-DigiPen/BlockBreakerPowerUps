@@ -81,7 +81,6 @@ public class Ball : MonoBehaviour
     // Destroy when off screen
     private void OnBecameInvisible()
     {
-        GameManager.Lives--;
         Destroy(gameObject);
     }
 }
