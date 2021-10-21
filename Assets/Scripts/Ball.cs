@@ -15,34 +15,58 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    [Tooltip("Amount of x and y force added to ball on start")]
-    public Vector2 forceAdded = new Vector2(250, 250);
+    [Tooltip("Starting velocity of the ball")]
+    public float startingVelocity = 8;
+    [Tooltip("Max velocity on ball")]
+    public float maxVelocity = 7;
     [Tooltip("The delay before the ball starts moving")]
     public float ballMoveDelay = 0.5f;
+    [Tooltip("Color the ball is when it has the damage powerup")]
+    public Color damagePowerUpColor;
     [Tooltip("Amoung of damage the ball does (script)")]
     public int damage = 1;
     [Tooltip("Damage power up active time (script)")]
     public float damagePowerUpTimer = 0;
+    [Tooltip("Size power up active time (script)")]
+    public float sizePowerUpTimer = 0;
 
+    private Rigidbody2D ballRB;
+    private SpriteRenderer ballSP;
     private KeyCode moveBallKey = KeyCode.Space;
+
     private Color startingBallColor;
     private bool damageBoosted = false;
+    private Vector3 startingBallSize;
+    private bool sizeBoosted = false;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        startingBallColor = GetComponent<SpriteRenderer>().color;
+        ballRB = GetComponent<Rigidbody2D>();
+        ballSP = GetComponent<SpriteRenderer>();
+        startingBallColor = ballSP.color;
+        startingBallSize = transform.localScale;
+
+        float rotation = 0;
+        while (rotation == 0)
+        {
+            rotation = Random.Range(-6, 6) * 12.5f;
+        }
+        transform.Rotate(0, 0, rotation, Space.Self);
+        ballRB = GetComponent<Rigidbody2D>();
         Invoke("DelayVelocity", ballMoveDelay);
     }
 
     // Update is called once per frame
     void Update()
     {
+        // PowerUps
         if (damagePowerUpTimer > 0)
         {
             if (!damageBoosted)
             {
-                GetComponent<SpriteRenderer>().color = Color.red;
+                ballSP.color = damagePowerUpColor;
                 damage *= 2;
                 damageBoosted = true;
             }
@@ -53,29 +77,46 @@ public class Ball : MonoBehaviour
         {
             if (damageBoosted)
             {
-                GetComponent<SpriteRenderer>().color = startingBallColor;
+                ballSP.color = startingBallColor;
                 damage /= 2;
                 damageBoosted = false;
                 damagePowerUpTimer = 0;
             }
         }
 
+        if (sizePowerUpTimer > 0)
+        {
+            if (!sizeBoosted)
+            {
+                transform.localScale = startingBallSize * 2;
+                sizeBoosted = true;
+            }
 
+            sizePowerUpTimer -= Time.deltaTime;
+        }
+        else
+        {
+            if (sizeBoosted)
+            {
+                transform.localScale = startingBallSize;
+                sizeBoosted = false;
+                sizePowerUpTimer = 0;
+            }
+        }
+
+        // "Fix" ball velocity 
         if (Input.GetKeyDown(moveBallKey))
         {
             DelayVelocity();
         }
+
+        ballRB.velocity = Vector2.ClampMagnitude(ballRB.velocity, maxVelocity);
     }
 
     // Coroutitine so delay can be added, adds velocity 
     private void DelayVelocity()
     {
-        bool dirrection = Random.Range(0f, 1f) > 0.5f;
-        if (dirrection)
-        {
-            forceAdded.x *= -1;
-        }
-        GetComponent<Rigidbody2D>().AddForce(forceAdded);
+        ballRB.velocity = transform.up * startingVelocity;
     }
 
     // Destroy when off screen

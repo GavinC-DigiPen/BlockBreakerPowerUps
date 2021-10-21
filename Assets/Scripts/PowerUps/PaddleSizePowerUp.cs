@@ -1,6 +1,6 @@
 ﻿//------------------------------------------------------------------------------
 //
-// File Name:	MultiShotPowerUp.cs
+// File Name:	PaddleSizePowerUp.cs
 // Author(s):	Gavin Cooper (gavin.cooper@digipen.edu)
 // Project:	    BlockBreakerPowerUps
 // Course:	    WANIC VGP2
@@ -13,12 +13,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MutliShotPowerUp : MonoBehaviour
+public class PaddleSizePowerUp : MonoBehaviour
 {
+    [Tooltip("The time the size bonus will be active")]
+    public float powerUpTime = 2.5f;
     [Tooltip("Time before powerup can be picked up")]
     public float wakeTime = 0.5f;
-    [Tooltip("Prefab of the ball")]
-    public GameObject ball;
 
     // Update is called once per frame
     void Update()
@@ -37,7 +37,11 @@ public class MutliShotPowerUp : MonoBehaviour
             Ball ballScript = collision.gameObject.GetComponent<Ball>();
             if (ballScript)
             {
-                Instantiate(ball, transform.position, Quaternion.identity);
+                Paddle paddleScript = FindObjectOfType<Paddle>();
+                if (paddleScript)
+                {
+                    paddleScript.sizePowerUpTimer += powerUpTime;
+                }
                 Destroy(gameObject);
             }
         }

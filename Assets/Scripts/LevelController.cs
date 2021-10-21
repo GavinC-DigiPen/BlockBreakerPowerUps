@@ -66,6 +66,7 @@ public class LevelController : MonoBehaviour
         Ball[] balls = FindObjectsOfType<Ball>();
         if (balls.Length <= 0)
         {
+            GameManager.Lives--;
             Instantiate(ball);
         }
 
